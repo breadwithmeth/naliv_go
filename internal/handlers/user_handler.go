@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	services "github.com/breadwithmeth/naliv_go/internal/services"
+	"github.com/breadwithmeth/naliv_go/internal/transport/rest/middleware"
 )
 
 type UserHandler struct {
@@ -48,4 +49,29 @@ func (h *UserHandler) GetAllUsersHandler(w http.ResponseWriter, r *http.Request)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
+}
+
+func (h *UserHandler) GetUserAddressesHandler(w http.ResponseWriter, r *http.Request) {
+	token := r.Header.Get("Authorization")
+	if token == "" {
+		http.Error(w, "Authorization token required", http.StatusUnauthorized)
+		return
+	}
+
+	// id, err := h.service.GetUserByToken(token)
+	id, ok := middleware.GetUserIDFromContext(r.Context())
+
+	if !ok {
+		http.Error(w, "Invalid token", http.StatusUnauthorized)
+		return
+	}
+	println("User ID from context:", id)
+	addresses, err := h.service.GetUserAddresses(id)
+	if err != nil {
+		http.Error(w, "Failed to get user addresses", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(addresses)
 }

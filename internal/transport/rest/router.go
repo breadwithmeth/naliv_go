@@ -23,6 +23,8 @@ func NewRouter(userService *service.UserService, itemService *service.ItemServic
 	itemHandler := handlers.NewItemHandler(itemService)
 	categoryHandler := handlers.NewCategoryHandler(categoryService)
 	v1.HandleFunc("GET /users", userHandler.GetAllUsersHandler)
+	// v1.HandleFunc("GET /user", userHandler.GetUserHandler)
+	v1.HandleFunc("GET /user/addresses", userHandler.GetUserAddressesHandler)
 	// router.HandleFunc("GET /user/{id}", userHandler.GetUserHandler)
 	// router.HandleFunc("POST /user", userHandler.CreateUserHandler)
 	// router.HandleFunc("PUT /user/{id}", userHandler.UpdateUserHandler)

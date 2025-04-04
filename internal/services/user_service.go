@@ -45,3 +45,31 @@ func (s *UserService) ValidateToken(token string) (int, error) {
 	}
 	return userID, nil
 }
+
+func (s *UserService) getUserByToken(token string) (*models.User, error) {
+	userID, err := s.ValidateToken(token)
+	if err != nil {
+		return nil, err
+	}
+	user, err := s.GetUserByID(userID)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (s *UserService) GetUserAddresses(userID int) ([]*models.Address, error) {
+	addresses, err := s.repo.GetUserAddresses(userID)
+	if err != nil {
+		return nil, err
+	}
+	return addresses, nil
+}
+
+func (s *UserService) GetUserByToken(token string) (*models.User, error) {
+	user, err := s.getUserByToken(token)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
