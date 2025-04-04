@@ -15,6 +15,7 @@ func NewUserService(repo *repository.UserRepository) *UserService {
 	if repo == nil {
 		panic("user repository is nil")
 	}
+
 	return &UserService{
 		repo: repo,
 	}
@@ -35,4 +36,12 @@ func (s *UserService) GetAllUsers() ([]*models.User, error) {
 		return nil, err
 	}
 	return users, nil
+}
+
+func (s *UserService) ValidateToken(token string) (int, error) {
+	userID, err := s.repo.ValidateToken(token)
+	if err != nil {
+		return 0, err
+	}
+	return userID, nil
 }

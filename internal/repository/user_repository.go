@@ -2,6 +2,8 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
+	"log"
 
 	"github.com/breadwithmeth/naliv_go/internal/models"
 )
@@ -44,4 +46,19 @@ func (r *UserRepository) FindAll() ([]*models.User, error) {
 		users = append(users, &user)
 	}
 	return users, nil
+}
+
+func (r *UserRepository) ValidateToken(token string) (int, error) {
+	var userID int
+	query := "SELECT user_id FROM users_tokens WHERE token = ?"
+	err := r.db.QueryRow(query, token).Scan(&userID)
+	log.Println("Validating token:", token)
+	log.Println("User ID from token:", userID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return 0, errors.New("invalid token")
+		}
+		return 0, err
+	}
+	return userID, nil
 }

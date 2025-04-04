@@ -51,11 +51,13 @@ func setupRouter(db *sql.DB) *http.ServeMux {
 	// 1. Создаём репозитории
 	userRepo := repository.NewUserRepository(db)
 	itemRepo := repository.NewItemRepository(db)
+	categoryRepo := repository.NewCategoryRepository(db)
 	// 2. Создаём сервисы
 	userService := service.NewUserService(userRepo)
 	itemService := service.NewItemService(itemRepo)
+	categoryService := service.NewCategoryService(categoryRepo)
 	// 3. Создаём маршрутизатор с обработчиками
-	router := transport.NewRouter(userService, itemService)
+	router := transport.NewRouter(userService, itemService, categoryService)
 
 	return router
 }
